@@ -1,27 +1,21 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
-
 import '../table.css';
 import 'react-toastify/dist/ReactToastify.css';
-
-
-const user = document.querySelector(".username")
-const siteurl = document.querySelector(".url")
-const pass = document.querySelector(".password")
-
 
 const Manager = () => {
     const [form, setForm] = useState({ username: "", password: "", url: "" });
     const [passwordArray, setPasswordArray] = useState([]);
+    const [showPassword, setShowPassword] = useState(false);
 
     const savePassword = () => {
-        setPasswordArray([...passwordArray, {...form,id:uuidv4()}]);
-        localStorage.setItem("password", JSON.stringify([...passwordArray, {...form,id:uuidv4()}]));
+        const newPassword = { ...form, id: uuidv4() };
+        const updatedArray = [...passwordArray, newPassword];
+        setPasswordArray(updatedArray);
+        localStorage.setItem("password", JSON.stringify(updatedArray));
         setForm({ username: "", password: "", url: "" });
-        const notify = () => toast("Password Saved!");
-        notify();
+        toast("Password Saved!");
     };
 
     useEffect(() => {
@@ -39,32 +33,27 @@ const Manager = () => {
 
     const copyText = (text) => {
         navigator.clipboard.writeText(text)
-            .then(() => {
-                const notify = () => toast("Copied to clipboard !");
-                notify();
-            })
-            .catch(err => {
-                const notify = () => toast('Error copying text!'+err);
-                notify();
-            });
+            .then(() => toast("Copied to clipboard!"))
+            .catch(err => toast(`Error copying text: ${err}`));
     };
 
-    const editPassword = (id)=>{
-        setForm(passwordArray.filter(i=>i.id===id)[0]);
-        setPasswordArray(passwordArray.filter(item=>item.id!==id));
-    }
+    const editPassword = (id) => {
+        const passwordToEdit = passwordArray.find(item => item.id === id);
+        setForm(passwordToEdit);
+        deletePassword(id);  // Remove the old entry before editing
+    };
 
-    // const newArray = [...passwordArray];
-    // newArray.splice(index, 1);
-    // setPasswordArray(newArray);
-    // localStorage.setItem("password", JSON.stringify(newArray));
     const deletePassword = (id) => {
-        setPasswordArray(passwordArray.filter(item=>item.id!==id));
-        localStorage.setItem("password", JSON.stringify(passwordArray.filter(item=>item.id!==id)));
-        const notify = () => toast("Deleted!");
-        notify();
+        const updatedArray = passwordArray.filter(item => item.id !== id);
+        setPasswordArray(updatedArray);
+        localStorage.setItem("password", JSON.stringify(updatedArray));
+        toast("Deleted!");
     };
-    
+
+    const toggleShowPassword = () => {
+        setShowPassword(!showPassword);
+    };
+
     return (
         <main className='w-min-full h-[100vh] bg-gray-100'>
             <ToastContainer />
@@ -79,19 +68,43 @@ const Manager = () => {
             </div>
             <div className="addnewpass flex flex-col gap-y-6">
                 <div className="details flex flex-col items-center gap-y-4 w-full">
-                    <input value={form.url} onChange={handleChange} placeholder='Enter website URL'
+                    <input
+                        value={form.url}
+                        onChange={handleChange}
+                        placeholder='Enter website URL'
                         className='url pl-4 rounded-md border border-green-300 h-12 w-[80%] shadow-sm focus:ring-2 focus:ring-green-400 transition'
-                        type="text" name="url" id="url" />
+                        type="text"
+                        name="url"
+                        id="url"
+                    />
                     <div className="idpass flex flex-wrap justify-center gap-4 w-full">
-                        <input value={form.username} onChange={handleChange} placeholder='Enter username'
+                        <input
+                            value={form.username}
+                            onChange={handleChange}
+                            placeholder='Enter username'
                             className='username pl-4 rounded-md border border-green-300 h-12 w-[35%] shadow-sm focus:ring-2 focus:ring-green-400 transition'
-                            type="text" name="username" id="username" />
+                            type="text"
+                            name="username"
+                            id="username"
+                        />
                         <div className="pass relative w-[35%] h-12">
-                            <input value={form.password} onChange={handleChange} placeholder='Enter Password'
+                            <input
+                                value={form.password}
+                                onChange={handleChange}
+                                placeholder='Enter Password'
                                 className='password pl-4 pr-10 rounded-md border border-green-300 h-full w-full shadow-sm focus:ring-2 focus:ring-green-400 transition'
-                                type="password" name="password" id="password" />
+                                type={showPassword ? "text" : "password"}
+                                name="password"
+                                id="password"
+                            />
                             <span className='absolute right-2 top-3 cursor-pointer'>
-                                <img id='eye' className='w-6' src="./icons/eye.png" alt="eye" />
+                                <img
+                                    onClick={toggleShowPassword}
+                                    id='eye'
+                                    className='w-6'
+                                    src={showPassword ? "./icons/eyecross.png" : "./icons/eye.png"}
+                                    alt="eye"
+                                />
                             </span>
                         </div>
                     </div>
@@ -122,9 +135,7 @@ const Manager = () => {
                         {passwordArray.map((obj, index) => (
                             <tr key={index} className="bg-gray-100 odd:bg-white hover:bg-gray-200 transition">
                                 <td className="py-3 flex justify-start items-center">
-                                    <span>
-                                        {obj.url}
-                                    </span>
+                                    <span>{obj.url}</span>
                                     <span onClick={() => copyText(obj.url)} className="cursor-pointer">
                                         <lord-icon
                                             src="https://cdn.lordicon.com/iykgtsbt.json"
@@ -134,9 +145,7 @@ const Manager = () => {
                                     </span>
                                 </td>
                                 <td className="py-3">
-                                    <span>
-                                        {obj.username}
-                                    </span>
+                                    <span>{obj.username}</span>
                                     <span onClick={() => copyText(obj.username)} className="cursor-pointer">
                                         <lord-icon
                                             src="https://cdn.lordicon.com/iykgtsbt.json"
@@ -145,8 +154,8 @@ const Manager = () => {
                                         </lord-icon>
                                     </span>
                                 </td>
-                                <td className="py-3 flex text-left items-center justify-start gap-2 ">
-                                    <span>{obj.password}</span>
+                                <td className="py-3 flex text-left items-center justify-start gap-2">
+                                    <span>{"*".repeat(obj.password.length)}</span>
                                     <span onClick={() => copyText(obj.password)} className="cursor-pointer">
                                         <lord-icon
                                             src="https://cdn.lordicon.com/iykgtsbt.json"
@@ -163,7 +172,7 @@ const Manager = () => {
                                             style={{ width: '25px', height: '25px' }}>
                                         </lord-icon>
                                     </span>
-                                    <span onClick={()=> deletePassword(obj.id)} className='curser-pointer'>
+                                    <span onClick={() => deletePassword(obj.id)} className='cursor-pointer'>
                                         <lord-icon
                                             src="https://cdn.lordicon.com/skkahier.json"
                                             trigger="hover"

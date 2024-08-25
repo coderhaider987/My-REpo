@@ -39,21 +39,23 @@ const Manager = () => {
 
     const copyText = (text) => {
         navigator.clipboard.writeText(text)
-            .then(() => toast("Copied to clipboard!"))
-            .catch(err => toast(`Error copying text: ${err}`));
+            .then(() => toast.success("Copied to clipboard!"))
+            .catch(err => toast.error(`Error copying text: ${err}`));
     };
 
     const editPassword = (id) => {
         const passwordToEdit = passwordArray.find(item => item.id === id);
         setForm(passwordToEdit);
-        deletePassword(id);  // Remove the old entry before editing
+        const updatedArray = passwordArray.filter(item => item.id !== id);
+        setPasswordArray(updatedArray);
+        localStorage.setItem("password", JSON.stringify(updatedArray));
     };
 
     const deletePassword = (id) => {
         const updatedArray = passwordArray.filter(item => item.id !== id);
         setPasswordArray(updatedArray);
         localStorage.setItem("password", JSON.stringify(updatedArray));
-        toast("Deleted!");
+        toast.warn("Deleted!");
     };
 
     const toggleShowPassword = () => {

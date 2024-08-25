@@ -3,11 +3,17 @@ import { ToastContainer, toast } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
 import '../table.css';
 import 'react-toastify/dist/ReactToastify.css';
+import { useMediaQuery } from 'react-responsive';
+
+
 
 const Manager = () => {
     const [form, setForm] = useState({ username: "", password: "", url: "" });
     const [passwordArray, setPasswordArray] = useState([]);
     const [showPassword, setShowPassword] = useState(false);
+    const isMobile = useMediaQuery({ query: '(max-width: 700px)' });
+    const maskText = (text) => (isMobile ? '***' : text);
+
 
     const savePassword = () => {
         const newPassword = { ...form, id: uuidv4() };
@@ -122,68 +128,69 @@ const Manager = () => {
                 </div>
             </div>
             <div className="passList flex justify-center mt-10">
-                <table className="w-[90%] bg-white shadow-md rounded-lg overflow-hidden">
-                    <thead className="bg-green-500 text-white">
-                        <tr>
-                            <th className="py-3">Site</th>
-                            <th className="py-3">Username</th>
-                            <th className="py-3">Password</th>
-                            <th className="py-3">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody className="tbody text-center">
-                        {passwordArray.map((obj, index) => (
-                            <tr key={index} className="bg-gray-100 odd:bg-white hover:bg-gray-200 transition">
-                                <td className="py-3 flex justify-start items-center">
-                                    <span>{obj.url}</span>
-                                    <span onClick={() => copyText(obj.url)} className="cursor-pointer">
-                                        <lord-icon
-                                            src="https://cdn.lordicon.com/iykgtsbt.json"
-                                            trigger="hover"
-                                            style={{ width: '25px', height: '25px' }}>
-                                        </lord-icon>
-                                    </span>
-                                </td>
-                                <td className="py-3">
-                                    <span>{obj.username}</span>
-                                    <span onClick={() => copyText(obj.username)} className="cursor-pointer">
-                                        <lord-icon
-                                            src="https://cdn.lordicon.com/iykgtsbt.json"
-                                            trigger="hover"
-                                            style={{ width: '25px', height: '25px' }}>
-                                        </lord-icon>
-                                    </span>
-                                </td>
-                                <td className="py-3 flex text-left items-center justify-start gap-2">
-                                    <span>{"*".repeat(obj.password.length)}</span>
-                                    <span onClick={() => copyText(obj.password)} className="cursor-pointer">
-                                        <lord-icon
-                                            src="https://cdn.lordicon.com/iykgtsbt.json"
-                                            trigger="hover"
-                                            style={{ width: '25px', height: '25px' }}>
-                                        </lord-icon>
-                                    </span>
-                                </td>
-                                <td>
-                                    <span onClick={() => editPassword(obj.id)} className="cursor-pointer">
-                                        <lord-icon
-                                            src="https://cdn.lordicon.com/gwlusjdu.json"
-                                            trigger="hover"
-                                            style={{ width: '25px', height: '25px' }}>
-                                        </lord-icon>
-                                    </span>
-                                    <span onClick={() => deletePassword(obj.id)} className='cursor-pointer'>
-                                        <lord-icon
-                                            src="https://cdn.lordicon.com/skkahier.json"
-                                            trigger="hover"
-                                            style={{ width: '25px', height: '25px' }}>
-                                        </lord-icon>
-                                    </span>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+            <table className="w-[90%] bg-white shadow-md rounded-lg overflow-hidden">
+  <thead className="bg-green-500 text-white">
+    <tr>
+      <th className="py-3">Site</th>
+      <th className="py-3">Username</th>
+      <th className="py-3">Password</th>
+      <th className="py-3">Actions</th>
+    </tr>
+  </thead>
+  <tbody className="tbody text-center">
+    {passwordArray.map((obj, index) => (
+      <tr key={index} className="bg-gray-100 odd:bg-white hover:bg-gray-200 transition">
+        <td className="py-3 flex justify-start items-center">
+        <span>{maskText(obj.url)}</span>
+          <span onClick={() => copyText(obj.url)} className="cursor-pointer">
+            <lord-icon
+              src="https://cdn.lordicon.com/iykgtsbt.json"
+              trigger="hover"
+              style={{ width: '25px', height: '25px' }}
+            ></lord-icon>
+          </span>
+        </td>
+        <td className="py-3">
+        <span>{maskText(obj.username)}</span>
+          <span onClick={() => copyText(obj.username)} className="cursor-pointer">
+            <lord-icon
+              src="https://cdn.lordicon.com/iykgtsbt.json"
+              trigger="hover"
+              style={{ width: '25px', height: '25px' }}
+            ></lord-icon>
+          </span>
+        </td>
+        <td className="py-3 flex text-left items-center justify-start gap-2">
+          <span>{"*".repeat(obj.password.length)}</span>
+          <span onClick={() => copyText(obj.password)} className="cursor-pointer">
+            <lord-icon
+              src="https://cdn.lordicon.com/iykgtsbt.json"
+              trigger="hover"
+              style={{ width: '25px', height: '25px' }}
+            ></lord-icon>
+          </span>
+        </td>
+        <td>
+          <span onClick={() => editPassword(obj.id)} className="cursor-pointer">
+            <lord-icon
+              src="https://cdn.lordicon.com/gwlusjdu.json"
+              trigger="hover"
+              style={{ width: '25px', height: '25px' }}
+            ></lord-icon>
+          </span>
+          <span onClick={() => deletePassword(obj.id)} className="cursor-pointer">
+            <lord-icon
+              src="https://cdn.lordicon.com/skkahier.json"
+              trigger="hover"
+              style={{ width: '25px', height: '25px' }}
+            ></lord-icon>
+          </span>
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
             </div>
         </main>
     );

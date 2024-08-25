@@ -16,10 +16,8 @@ const Footer = () => {
                 </div>
 
                 {/* Navigation Links */}
-                <div className="flex flex-col items-center md:flex-row md:gap-10">
-                    <a href="/Home" className="hover:text-green-400 transition-colors mb-2 md:mb-0">Home</a>
-                    <a href="/About" className="hover:text-green-400 transition-colors mb-2 md:mb-0">About</a>
-                    <a href="/Contact" className="hover:text-green-400 transition-colors mb-2 md:mb-0">Contact</a>
+                <div className="flex flex-col items-center justify-center md:flex-row md:gap-10">
+                  Made By Haider
                 </div>
 
                 {/* Social Media Icons */}

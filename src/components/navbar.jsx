@@ -2,7 +2,7 @@ import React from 'react';
 
 const Navbar = () => {
     return (
-        <nav className='bg-slate-800 w-full flex justify-between items-center h-[70px] px-8 md:px-16 lg:px-24 text-white'>
+        <nav className='bg-slate-800 w-full flex justify-between items-center h-[70px] px-8 md:px-16 lg:px-24 text-white fixed z-50'>
             {/* Logo */}
             <a href="/" className="flex items-center text-2xl font-bold hover:text-green-400 transition-colors">
                 <span className='text-green-500'>&lt;</span>
